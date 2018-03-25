@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import thiagodnf.jacof.aco.ant.Ant;
 import thiagodnf.jacof.aco.ant.exploration.AbstractAntExploration;
+import thiagodnf.jacof.aco.ant.generators.IndependentAntsColonyGenerator;
 import thiagodnf.jacof.aco.ant.initialization.AbstractAntInitialization;
 import thiagodnf.jacof.aco.daemonactions.AbstractDaemonActions;
 import thiagodnf.jacof.aco.graph.AntGraph;
@@ -146,16 +147,18 @@ public abstract class ACO implements Observer {
 	 * and positions them in one of the graph's vertex
 	 */
 	protected void initializeAnts() {
-		
+		//TODO: Abstract the strategy?
 		LOGGER.debug("Initializing the ants");
-		
-		this.ants = new Ant[numberOfAnts];
 
-		for (int k = 0; k < numberOfAnts; k++) {
-			ants[k] = new Ant(this, k);
-			ants[k].setAntInitialization(getAntInitialization());
-			ants[k].addObserver(this);
-		}
+		this.ants = IndependentAntsColonyGenerator.generate(numberOfAnts, this);
+
+//		this.ants = new Ant[numberOfAnts];
+//
+//		for (int k = 0; k < numberOfAnts; k++) {
+//			ants[k] = new Ant(this, k);
+//			ants[k].setAntInitialization(getAntInitialization());
+//			ants[k].addObserver(this);
+//		}
 	}
 	
 	/**

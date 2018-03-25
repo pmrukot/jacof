@@ -13,7 +13,7 @@ import thiagodnf.jacof.aco.ant.initialization.AbstractAntInitialization;
 /**
  * This class represents an ant and its process of building a solution
  * for a given addressed problem.
- * 
+ *
  * @author Thiago N. Ferreira
  * @version 1.0.0
  */
@@ -21,46 +21,52 @@ public class Ant extends Observable implements Runnable{
 
 	/** Identifier */
 	protected int id;
-	
+
+	/** Importance of the pheromones values */
+	protected double alpha;
+
+	/** Importance of the heuristic information */
+	protected double beta;
+
 	/** The ant colony optimization */
 	public ACO aco;
-		
+
 	/** The Current Node */
 	public int currentNode;
-	
+
 	/** The path traveled*/
 	public int[][] path;
-	
+
 	/** The tour built */
 	public List<Integer> tour;
-	
+
 	/** The list with the nodes to visit */
 	public List<Integer> nodesToVisit;
 
 	/** The tour length traveled*/
 	protected double tourLength;
-	
+
 	/** The ant initialization */
 	protected AbstractAntInitialization antInitialization;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param aco The ant colony optimization
 	 * @param id The ant's id
 	 */
 	public Ant(ACO aco, int id) {
-		
+
 		checkNotNull(aco, "The aco should not be null");
 		checkArgument(id >= 0, "The id should be > 0. Passed: %s", id);
-		
+
 		this.aco = aco;
-		this.id = id;		
+		this.id = id;
 		this.nodesToVisit = new ArrayList<>();
 		this.tour = new ArrayList<>();
 		this.path = new int[aco.getProblem().getNumberOfNodes()][aco.getProblem().getNumberOfNodes()];
 	}
-	
+
 	/**
 	 * Restart all information before starting the search process
 	 */
@@ -70,17 +76,17 @@ public class Ant extends Observable implements Runnable{
 		this.tour.clear();
 		this.nodesToVisit = aco.getProblem().initNodesToVisit(this.currentNode);
 		this.tour.add(new Integer(currentNode));
-		this.path = new int[aco.getProblem().getNumberOfNodes()][aco.getProblem().getNumberOfNodes()];		
+		this.path = new int[aco.getProblem().getNumberOfNodes()][aco.getProblem().getNumberOfNodes()];
 	}
-	
+
 	@Override
 	public void run() {
 		reset();
-		explore();		
+		explore();
 		setChanged();
 		notifyObservers(this);
 	}
-	
+
 	/**
 	 * Construct the ant's solution
 	 */
@@ -99,7 +105,7 @@ public class Ant extends Observable implements Runnable{
 			if (aco.getAntLocalUpdate() != null) {
 				aco.getAntLocalUpdate().update(currentNode, nextNode);
 			}
-			
+
 			// Save the next node in the tour
 			tour.add(new Integer(nextNode));
 
@@ -114,22 +120,22 @@ public class Ant extends Observable implements Runnable{
 			currentNode = nextNode;
 		}
 	}
-			
+
 	/**
 	 * Convert from an ant solution to integer array
-	 * 
+	 *
 	 * @return the solution formatted in integer array
 	 */
 	public int[] getSolution() {
 		return tour.stream().mapToInt(i -> i).toArray();
 	}
-	
+
 	/**
 	 * Clone an ant
 	 */
 	public Ant clone() {
 		Ant ant = new Ant(aco, id);
-		
+
 		ant.id = id;
 		ant.currentNode = currentNode;
 		ant.tourLength = tourLength;
@@ -137,10 +143,10 @@ public class Ant extends Observable implements Runnable{
 		ant.nodesToVisit = new ArrayList<>(nodesToVisit);
 		ant.antInitialization = antInitialization;
 		ant.path = path.clone();
-		
+
 		return ant;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -148,10 +154,26 @@ public class Ant extends Observable implements Runnable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+	public double getAlpha() {
+		return alpha;
+	}
+
+	public void setAlpha(double alpha) {
+		this.alpha = alpha;
+	}
+
+	public double getBeta() {
+		return beta;
+	}
+
+	public void setBeta(double beta) {
+		this.beta = beta;
+	}
+
 	public List<Integer> getNodesToVisit() {
 		return nodesToVisit;
-	}	
+	}
 
 	public double getTourLength() {
 		return tourLength;
@@ -164,7 +186,7 @@ public class Ant extends Observable implements Runnable{
 	public void setNodesToVisit(List<Integer> nodesToVisit) {
 		this.nodesToVisit = nodesToVisit;
 	}
-	
+
 	public AbstractAntInitialization getAntInitialization() {
 		return antInitialization;
 	}

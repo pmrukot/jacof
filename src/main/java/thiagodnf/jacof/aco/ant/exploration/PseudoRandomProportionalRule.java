@@ -2,6 +2,7 @@ package thiagodnf.jacof.aco.ant.exploration;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import org.apache.log4j.Logger;
 import thiagodnf.jacof.aco.ACO;
 import thiagodnf.jacof.aco.ant.Ant;
 import thiagodnf.jacof.aco.ant.selection.AbstractAntSelection;
@@ -39,6 +40,9 @@ public class PseudoRandomProportionalRule extends AbstractAntExploration {
 		return doExploration(ant, i);	
 	}
 
+	static final Logger LOGGER = Logger.getLogger(PseudoRandomProportionalRule.class);
+
+
 	public int doExploration(Ant ant, int i) {
 		
 		int nextNode = -1;
@@ -53,8 +57,12 @@ public class PseudoRandomProportionalRule extends AbstractAntExploration {
 
 			checkState(aco.getGraph().getTau(i, j) != 0.0, "The tau(i,j) should not be 0.0");
 
-			tij[j] = Math.pow(aco.getGraph().getTau(i, j), aco.getAlpha());
-			nij[j] = Math.pow(aco.getProblem().getNij(i, j), aco.getBeta());
+			//TODO: per ant below
+			tij[j] = Math.pow(aco.getGraph().getTau(i, j), ant.getAlpha());
+			nij[j] = Math.pow(aco.getProblem().getNij(i, j), ant.getBeta());
+
+			// tij[j] = Math.pow(aco.getGraph().getTau(i, j), aco.getAlpha());
+			// nij[j] = Math.pow(aco.getProblem().getNij(i, j), aco.getBeta());
 
 			sum += tij[j] * nij[j];
 		}
