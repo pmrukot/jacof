@@ -1,17 +1,8 @@
 package thiagodnf.jacof.aco;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import org.apache.log4j.Logger;
-
 import thiagodnf.jacof.aco.ant.Ant;
 import thiagodnf.jacof.aco.ant.exploration.AbstractAntExploration;
-import thiagodnf.jacof.aco.ant.generators.IndependentAntsColonyGenerator;
 import thiagodnf.jacof.aco.ant.initialization.AbstractAntInitialization;
 import thiagodnf.jacof.aco.daemonactions.AbstractDaemonActions;
 import thiagodnf.jacof.aco.graph.AntGraph;
@@ -20,6 +11,13 @@ import thiagodnf.jacof.aco.rule.globalupdate.deposit.AbstractDeposit;
 import thiagodnf.jacof.aco.rule.globalupdate.evaporation.AbstractEvaporation;
 import thiagodnf.jacof.aco.rule.localupdate.AbstractLocalUpdateRule;
 import thiagodnf.jacof.problem.Problem;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This is the base class. This one has the main components
@@ -31,64 +29,47 @@ import thiagodnf.jacof.problem.Problem;
  * @version 1.0.0
  */
 public abstract class ACO implements Observer {
-	
+
+	/**
+	 * The class logger
+	 */
+	static final Logger LOGGER = Logger.getLogger(ACO.class);
 	/** Importance of the pheromones values*/
 	protected double alpha;
-	
 	/** Importance of the heuristic information*/
 	protected double beta;
-	
 	/** The number of ants */
 	protected int numberOfAnts;
-	
 	/** The number of iterations */
 	protected int numberOfIterations;
-	
 	/** Ants **/
 	protected Ant[] ants;
-	
 	/** The graph */
 	protected AntGraph graph;
-
 	/** The current iteration */
 	protected int it = 0;
-	
 	/** Total of ants that finished your tour */
 	protected int finishedAnts = 0;
-	
 	/** Best Ant in tour */
 	protected Ant globalBest;
-	
 	/** Best Current Ant in tour */
 	protected Ant currentBest;
-	
 	/** The addressed problem */
 	protected Problem problem;
-	
 	/** The graph initialization */
 	protected AbstractGraphInitialization graphInitialization;
-	
 	/** The ant initialization */
 	protected AbstractAntInitialization antInitialization;
-	
 	/** The ant exploration*/
 	protected AbstractAntExploration antExploration;
-	
 	/** The ant local update rule */
 	protected AbstractLocalUpdateRule antLocalUpdate;
-	
 	/** The daemon actions */
 	protected List<AbstractDaemonActions> daemonActions = new ArrayList<>();
-	
 	/** The pheromone evaporation's rules */
 	protected List<AbstractEvaporation> evaporations = new ArrayList<>();
-	
 	/** The pheromone deposit's rules */
 	protected List<AbstractDeposit> deposits = new ArrayList<>();
-	
-	/** The class logger*/
-	static final Logger LOGGER = Logger.getLogger(ACO.class);
-	
 	/** The evaporation rate */
 	protected double rho;
 	/**
@@ -147,18 +128,15 @@ public abstract class ACO implements Observer {
 	 * and positions them in one of the graph's vertex
 	 */
 	protected void initializeAnts() {
-		//TODO: Abstract the strategy?
 		LOGGER.debug("Initializing the ants");
 
-		this.ants = IndependentAntsColonyGenerator.generate(numberOfAnts, this);
+		this.ants = new Ant[numberOfAnts];
 
-//		this.ants = new Ant[numberOfAnts];
-//
-//		for (int k = 0; k < numberOfAnts; k++) {
-//			ants[k] = new Ant(this, k);
-//			ants[k].setAntInitialization(getAntInitialization());
-//			ants[k].addObserver(this);
-//		}
+		for (int k = 0; k < numberOfAnts; k++) {
+			ants[k] = new Ant(this, k);
+			ants[k].setAntInitialization(getAntInitialization());
+			ants[k].addObserver(this);
+		}
 	}
 	
 	/**
@@ -356,13 +334,13 @@ public abstract class ACO implements Observer {
 		this.antInitialization = antInitialization;
 	}
 	
+	public AbstractGraphInitialization getGraphInitialization() {
+		return graphInitialization;
+	}
+
 	public void setGraphInitialization(AbstractGraphInitialization graphInitialization) {
 		this.graphInitialization = graphInitialization;
 	}
-	
-	public AbstractGraphInitialization getGraphInitialization() {
-		return graphInitialization;
-	}	
 	
 	public AbstractAntExploration getAntExploration() {
 		return antExploration;
