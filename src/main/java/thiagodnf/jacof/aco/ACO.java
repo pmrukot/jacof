@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Logger;
 
 import thiagodnf.jacof.aco.ant.Ant;
@@ -238,6 +239,97 @@ public abstract class ACO implements Observer {
 			daemonAction.doAction();
 		}
 	}
+
+	private double pheremoneRatio(ACO aco) {
+		long countEdgesWithPheromone = 0;
+		long countAllEdges = 0;
+		double[][] edges = aco.getGraph().getTau();
+		double threshold = averageThreshold(aco);
+
+		int x;
+		int y;
+		double[] currentRow;
+
+		for(x = 0; x < edges.length; x++) {
+			currentRow = edges[x];
+			for(y = x + 1; y < currentRow.length; y++) {
+				countAllEdges++;
+				if(currentRow[y] > threshold) countEdgesWithPheromone++;
+			}
+		}
+
+		return ((double)countEdgesWithPheromone/countAllEdges)*100;
+	}
+
+	private double averageThreshold(ACO aco) {
+		double[][] edges = aco.getGraph().getTau();
+		int x;
+		int y;
+		double[] currentRow;
+		double everyEdgePheromoneSum = 0;
+		int countAllEdges = 0;
+		for(x = 0; x < edges.length; x++) {
+			currentRow = edges[x];
+			for(y = x + 1; y < currentRow.length; y++) {
+				countAllEdges++;
+				everyEdgePheromoneSum += currentRow[y];
+			}
+		}
+
+		return everyEdgePheromoneSum / countAllEdges;
+	}
+
+
+	private double attractivenessDispersion(ACO aco) {
+		double[][] attractiveness = new double[aco.getGraph().getTau()[0].length][aco.getGraph().getTau().length];
+		int x;
+		int y;
+		double[] currentRow;
+		List<Double> pheromoneValues = new ArrayList<>();
+
+		for(x = 0; x < attractiveness.length; x++) {
+			currentRow = attractiveness[x];
+			for(y = x + 1; y < currentRow.length; y++) {
+				pheromoneValues.add(nodeAttractiveness(x, y, aco));
+			}
+		}
+
+		StandardDeviation standardDeviation = new StandardDeviation();
+		return standardDeviation.evaluate(pheromoneValues.stream().mapToDouble(i -> i).toArray());
+	}
+
+
+	private double attractivenessRatio(ACO aco) {
+		int[][] bestAntPath = aco.getGlobalBest().path;
+		int x;
+		int y;
+		int[] currentRow;
+
+		List<Double> bestSolutionValues = new ArrayList<>();
+		List<Double> otherSolutionValues = new ArrayList<>();
+
+		for(x = 0; x < bestAntPath.length; x++) {
+			currentRow = bestAntPath[x];
+			for(y = x + 1; y < currentRow.length; y++) {
+				if(currentRow[y] == 1) {
+					bestSolutionValues.add(nodeAttractiveness(x, y, aco));
+				}
+				else {
+					otherSolutionValues.add(nodeAttractiveness(x, y, aco));
+				}
+			}
+		}
+
+		double bestSolutionAttractivenessSum = bestSolutionValues.stream().mapToDouble(i -> i).sum();
+		double otherSolutionsAttractivenessSum = otherSolutionValues.stream().mapToDouble(i -> i).sum();
+
+		return 100 * (bestSolutionAttractivenessSum / otherSolutionsAttractivenessSum);
+	}
+
+	private double nodeAttractiveness(int x, int y, ACO aco) {
+		return aco.getAntExploration().getNodeAttractiveness(x, y);
+	}
+
 
 	/**
 	 * When an ant has finished its search process, this method is called to

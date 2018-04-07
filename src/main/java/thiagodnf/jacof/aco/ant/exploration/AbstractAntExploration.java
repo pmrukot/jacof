@@ -67,6 +67,8 @@ public abstract class AbstractAntExploration {
 	 */
 	public abstract int getNextNode(Ant ant, int currentNode);
 
+	public abstract double getNodeAttractiveness(int i, int j);
+
 	@Override
 	public abstract String toString();
 }
