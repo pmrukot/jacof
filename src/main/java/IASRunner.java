@@ -1,6 +1,3 @@
-package thiagodnf.jacof;
-
-
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 import thiagodnf.jacof.aco.IndependentAntSystem;
