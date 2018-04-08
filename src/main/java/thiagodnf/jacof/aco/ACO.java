@@ -234,7 +234,7 @@ public abstract class ACO implements Observer {
 	public void closeBenchmarkDataFiles() {
 		this.writerPheromoneRatio.close();
 		this.writerAttractivenessDispersion.close();
-		this.writerPheromoneRatio.close();
+		this.writerAttractivenessRatio.close();
 	}
 
 	/**
