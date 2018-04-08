@@ -23,13 +23,6 @@ import thiagodnf.jacof.aco.rule.globalupdate.evaporation.AbstractEvaporation;
 import thiagodnf.jacof.aco.rule.localupdate.AbstractLocalUpdateRule;
 import thiagodnf.jacof.problem.Problem;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * This is the base class. This one has the main components
  * of all ACO's implementations. So, All ACO's implementations should be extended from this class.
