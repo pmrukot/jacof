@@ -2,6 +2,9 @@ package thiagodnf.jacof.aco;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -92,6 +95,12 @@ public abstract class ACO implements Observer {
 	
 	/** The evaporation rate */
 	protected double rho;
+
+	protected PrintWriter writerPheromoneRatio;
+
+	protected PrintWriter writerAttractivenessDispersion;
+
+	protected PrintWriter writerAttractivenessRatio;
 	/**
 	 * Constructor
 	 * 
@@ -113,6 +122,8 @@ public abstract class ACO implements Observer {
 	public int[] solve() {
 		
 		LOGGER.info("Starting ACO");
+
+		prepareBenchmarkDataFiles();
 		
 		build();
 		
@@ -126,7 +137,9 @@ public abstract class ACO implements Observer {
 			updatePheromones();
 			daemonActions(); // optional
 		}
-		
+
+		closeBenchmarkDataFiles();
+
 		LOGGER.info("Done");
 
 		return globalBest.getSolution();
@@ -223,6 +236,28 @@ public abstract class ACO implements Observer {
 			ex.printStackTrace();
 		}	
 	}
+
+	public void prepareBenchmarkDataFiles() {
+		String encoding = "UTF-8";
+		String filePrefix = this.problem.toString() + "-" + Long.toString(System.currentTimeMillis()) + "-";
+		String pheromoneRatio = filePrefix + "pheromone-ratio.txt";
+		String attractivenessDispersion = filePrefix + "attractiveness-dispersion.txt";
+		String attractivenessRatio = filePrefix + "attractiveness-ratio.txt";
+
+		try {
+			this.writerPheromoneRatio = new PrintWriter(pheromoneRatio, encoding);
+			this.writerAttractivenessDispersion = new PrintWriter(attractivenessDispersion, encoding);
+			this.writerAttractivenessRatio = new PrintWriter(attractivenessRatio, encoding);
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void closeBenchmarkDataFiles() {
+		this.writerPheromoneRatio.close();
+		this.writerAttractivenessDispersion.close();
+		this.writerPheromoneRatio.close();
+	}
 	
 	/**
 	 * Perform the daemon actions
@@ -238,6 +273,10 @@ public abstract class ACO implements Observer {
 		for (AbstractDaemonActions daemonAction : daemonActions) {
 			daemonAction.doAction();
 		}
+
+		this.writerPheromoneRatio.println(Double.toString(pheremoneRatio(this)));
+		this.writerAttractivenessDispersion.println(Double.toString(attractivenessDispersion(this)));
+		this.writerAttractivenessRatio.println(Double.toString(attractivenessRatio(this)));
 	}
 
 	private double pheremoneRatio(ACO aco) {
