@@ -1,12 +1,12 @@
 package thiagodnf.jacof.aco.ant.exploration;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import org.apache.log4j.Logger;
 import thiagodnf.jacof.aco.ACO;
 import thiagodnf.jacof.aco.ant.Ant;
 import thiagodnf.jacof.aco.ant.selection.AbstractAntSelection;
 import thiagodnf.jacof.aco.ant.selection.RouletteWheel;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * This class represents how an ant in AS algorithm chooses the next node
@@ -16,9 +16,11 @@ import thiagodnf.jacof.aco.ant.selection.RouletteWheel;
  */
 public class PseudoRandomProportionalRule extends AbstractAntExploration {
 
+	static final Logger LOGGER = Logger.getLogger(PseudoRandomProportionalRule.class);
+	
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param aco The ant colony optimization used
 	 * @param antSelection The ant selection used
 	 */
@@ -28,20 +30,17 @@ public class PseudoRandomProportionalRule extends AbstractAntExploration {
 	
 	/**
 	 * Constructor by using RouletteWheel as default ant selection
-	 * 
+	 *
 	 * @param aco The ant colony optimization used
 	 */
 	public PseudoRandomProportionalRule(ACO aco) {
 		this(aco, new RouletteWheel());
 	}
-	
+
 	@Override
 	public int getNextNode(Ant ant, int i) {
-		return doExploration(ant, i);	
+		return doExploration(ant, i);
 	}
-
-	static final Logger LOGGER = Logger.getLogger(PseudoRandomProportionalRule.class);
-
 
 	public int doExploration(Ant ant, int i) {
 		
@@ -57,12 +56,8 @@ public class PseudoRandomProportionalRule extends AbstractAntExploration {
 
 			checkState(aco.getGraph().getTau(i, j) != 0.0, "The tau(i,j) should not be 0.0");
 
-			//TODO: per ant below
-			tij[j] = Math.pow(aco.getGraph().getTau(i, j), ant.getAlpha());
-			nij[j] = Math.pow(aco.getProblem().getNij(i, j), ant.getBeta());
-
-			// tij[j] = Math.pow(aco.getGraph().getTau(i, j), aco.getAlpha());
-			// nij[j] = Math.pow(aco.getProblem().getNij(i, j), aco.getBeta());
+			tij[j] = Math.pow(aco.getGraph().getTau(i, j), aco.getAlpha());
+			nij[j] = Math.pow(aco.getProblem().getNij(i, j), aco.getBeta());
 
 			sum += tij[j] * nij[j];
 		}
