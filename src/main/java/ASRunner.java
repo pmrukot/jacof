@@ -1,7 +1,6 @@
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
 import thiagodnf.jacof.aco.AntSystem;
-import thiagodnf.jacof.aco.IndependentAntSystem;
 import thiagodnf.jacof.problem.Problem;
 import thiagodnf.jacof.problem.tsp.TravellingSalesmanProblem;
 import thiagodnf.jacof.util.ExecutionStats;
@@ -25,13 +24,6 @@ public class ASRunner {
         aco.setAlpha(2.0);
         aco.setBeta(3.0);
         aco.setRho(0.01);
-
-
-        IndependentAntSystem independentAco = new IndependentAntSystem(problem);
-
-        independentAco.setNumberOfAnts(50);
-        independentAco.setNumberOfIterations(100);
-        independentAco.setRho(0.01);
 
 		ExecutionStats es = ExecutionStats.execute(aco, problem);
 		es.printStats();
