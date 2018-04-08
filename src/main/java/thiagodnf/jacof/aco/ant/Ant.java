@@ -143,6 +143,8 @@ public class Ant extends Observable implements Runnable{
 		ant.nodesToVisit = new ArrayList<>(nodesToVisit);
 		ant.antInitialization = antInitialization;
 		ant.path = path.clone();
+		ant.alpha = alpha;
+		ant.beta = beta;
 
 		return ant;
 	}
@@ -200,6 +202,6 @@ public class Ant extends Observable implements Runnable{
 	 */
 	@Override
 	public String toString() {
-		return "Ant_" + id + " " + tourLength + " " + tour;
+		return "Ant_" + id + " " + tourLength + " " + tour + " alpha: " + alpha + " beta: " + beta;
 	}
 }

@@ -1,7 +1,9 @@
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
+import thiagodnf.jacof.aco.AntSystem;
 import thiagodnf.jacof.aco.IndependentAntSystem;
 import thiagodnf.jacof.problem.Problem;
+import thiagodnf.jacof.problem.kp.KnapsackProblem;
 import thiagodnf.jacof.problem.tsp.TravellingSalesmanProblem;
 import thiagodnf.jacof.util.ExecutionStats;
 
@@ -13,19 +15,47 @@ public class IASRunner {
 
     public static void main(String[] args) throws ParseException, IOException {
 
-        String instance = "src/main/resources/problems/tsp/oliver30.tsp";
+        String tspInstance = "src/main/resources/problems/tsp/oliver30.tsp";
+        Problem tspProblem = new TravellingSalesmanProblem(tspInstance);
+        Integer numberOfAnts = 50;
+        Integer numberOfiterations = 100;
+        Double ASAlpha = 2.0;
+        Double ASBeta = 3.0;
+        Double Rho = 0.01;
 
-        Problem problem = new TravellingSalesmanProblem(instance);
+        IndependentAntSystem tspIAS = new IndependentAntSystem(tspProblem);
+        tspIAS.setNumberOfAnts(numberOfAnts);
+        tspIAS.setNumberOfIterations(numberOfiterations);
+        tspIAS.setRho(Rho);
 
-        IndependentAntSystem aco = new IndependentAntSystem(problem);
-        aco.setNumberOfAnts(50);
-        aco.setNumberOfIterations(100);
-        aco.setAlpha(2.0);
-        aco.setBeta(3.0);
-        aco.setRho(0.01);
+        ExecutionStats iasES = ExecutionStats.execute(tspIAS, tspProblem);
 
-        ExecutionStats es = ExecutionStats.execute(aco, problem);
-        es.printStats();
+
+        AntSystem tspAS = new AntSystem(tspProblem);
+        tspAS.setNumberOfAnts(numberOfAnts);
+        tspAS.setNumberOfIterations(numberOfiterations);
+        tspAS.setAlpha(ASAlpha);
+        tspAS.setBeta(ASBeta);
+        tspAS.setRho(Rho);
+
+        ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
+
+
+        iasES.printStats();
+        asES.printStats();
+
+//        String kpInstance = "src/main/resources/problems/kp/p06.kp";
+//
+//        Problem kpProblem = new KnapsackProblem(kpInstance);
+//
+//        IndependentAntSystem kpIACO = new IndependentAntSystem(kpProblem);
+//
+//        kpIACO.setNumberOfAnts(50);
+//        kpIACO.setNumberOfIterations(3000);
+//        kpIACO.setRho(0.1);
+//
+//        ExecutionStats kpES = ExecutionStats.execute(kpIACO, kpProblem);
+//        kpES.printStats();
     }
 
 }
