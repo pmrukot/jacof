@@ -3,7 +3,6 @@ import org.apache.log4j.Logger;
 import thiagodnf.jacof.aco.AntSystem;
 import thiagodnf.jacof.aco.IndependentAntSystem;
 import thiagodnf.jacof.problem.Problem;
-import thiagodnf.jacof.problem.kp.KnapsackProblem;
 import thiagodnf.jacof.problem.tsp.TravellingSalesmanProblem;
 import thiagodnf.jacof.util.ExecutionStats;
 
@@ -15,7 +14,7 @@ public class IASRunner {
 
     public static void main(String[] args) throws ParseException, IOException {
 
-        String tspInstance = "src/main/resources/problems/tsp/oliver30.tsp";
+        String tspInstance = "src/main/resources/problems/tsp/berlin52.tsp";
         Problem tspProblem = new TravellingSalesmanProblem(tspInstance);
         Integer numberOfAnts = 50;
         Integer numberOfiterations = 100;
@@ -44,18 +43,6 @@ public class IASRunner {
         iasES.printStats();
         asES.printStats();
 
-//        String kpInstance = "src/main/resources/problems/kp/p06.kp";
-//
-//        Problem kpProblem = new KnapsackProblem(kpInstance);
-//
-//        IndependentAntSystem kpIACO = new IndependentAntSystem(kpProblem);
-//
-//        kpIACO.setNumberOfAnts(50);
-//        kpIACO.setNumberOfIterations(3000);
-//        kpIACO.setRho(0.1);
-//
-//        ExecutionStats kpES = ExecutionStats.execute(kpIACO, kpProblem);
-//        kpES.printStats();
     }
 
 }
