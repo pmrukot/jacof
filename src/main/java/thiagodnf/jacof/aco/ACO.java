@@ -1,15 +1,5 @@
 package thiagodnf.jacof.aco;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.log4j.Logger;
 import thiagodnf.jacof.aco.ant.Ant;
@@ -22,6 +12,16 @@ import thiagodnf.jacof.aco.rule.globalupdate.deposit.AbstractDeposit;
 import thiagodnf.jacof.aco.rule.globalupdate.evaporation.AbstractEvaporation;
 import thiagodnf.jacof.aco.rule.localupdate.AbstractLocalUpdateRule;
 import thiagodnf.jacof.problem.Problem;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This is the base class. This one has the main components
@@ -82,7 +82,10 @@ public abstract class ACO implements Observer {
 	protected PrintWriter writerAttractivenessDispersion;
 
 	protected PrintWriter writerAttractivenessRatio;
-	/**
+
+    protected PrintWriter writerPartialResults;
+
+    /**
 	 * Constructor
 	 * 
 	 * @param problem The addressed problem
@@ -221,12 +224,14 @@ public abstract class ACO implements Observer {
 		String pheromoneRatio = filePrefix + "pheromone-ratio.txt";
 		String attractivenessDispersion = filePrefix + "attractiveness-dispersion.txt";
 		String attractivenessRatio = filePrefix + "attractiveness-ratio.txt";
+        String partialResults = filePrefix + "partial-results.txt";
 
 		try {
 			this.writerPheromoneRatio = new PrintWriter(pheromoneRatio, encoding);
 			this.writerAttractivenessDispersion = new PrintWriter(attractivenessDispersion, encoding);
 			this.writerAttractivenessRatio = new PrintWriter(attractivenessRatio, encoding);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+            this.writerPartialResults = new PrintWriter(partialResults, encoding);
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	}
@@ -235,7 +240,8 @@ public abstract class ACO implements Observer {
 		this.writerPheromoneRatio.close();
 		this.writerAttractivenessDispersion.close();
 		this.writerAttractivenessRatio.close();
-	}
+        this.writerPartialResults.close();
+    }
 
 	/**
 	 * Perform the daemon actions
@@ -255,7 +261,8 @@ public abstract class ACO implements Observer {
 		this.writerPheromoneRatio.println(Double.toString(pheremoneRatio(this)));
 		this.writerAttractivenessDispersion.println(String.format("%.8f", attractivenessDispersion(this)));
 		this.writerAttractivenessRatio.println(Double.toString(attractivenessRatio(this)));
-	}
+        this.writerPartialResults.println(Double.toString(globalBest.getTourLength()));
+    }
 
 	private double pheremoneRatio(ACO aco) {
 		long countEdgesWithPheromone = 0;
