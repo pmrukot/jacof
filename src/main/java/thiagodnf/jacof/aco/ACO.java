@@ -34,9 +34,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public abstract class ACO implements Observer {
 
-	/**
-	 * The class logger
-	 */
+	/** Order number of experiment */
+    protected String experimentId;
+	/** The class logger */
 	static final Logger LOGGER = Logger.getLogger(ACO.class);
 	/** Importance of the pheromones values*/
 	protected double alpha;
@@ -82,6 +82,8 @@ public abstract class ACO implements Observer {
 	protected PrintWriter writerAttractivenessDispersion;
 
 	protected PrintWriter writerAttractivenessRatio;
+
+	protected PrintWriter writerCurrentGlobalBest;
 
     protected PrintWriter writerPartialResults;
 
@@ -220,17 +222,19 @@ public abstract class ACO implements Observer {
 
 	public void prepareBenchmarkDataFiles() {
 		String encoding = "UTF-8";
-		String filePrefix = this.toString() + "-"; // + this.problem.toString() + "-" + Long.toString(System.currentTimeMillis()) + "-";
+		String filePrefix = this.toString() + "-"; // + Long.toString(System.currentTimeMillis()) + "-";
 		String pheromoneRatio = filePrefix + "pheromone-ratio.txt";
 		String attractivenessDispersion = filePrefix + "attractiveness-dispersion.txt";
 		String attractivenessRatio = filePrefix + "attractiveness-ratio.txt";
         String partialResults = filePrefix + "partial-results.txt";
+		String currentGlobalBest = filePrefix + "current-and-global-best.txt";
 
 		try {
 			this.writerPheromoneRatio = new PrintWriter(pheromoneRatio, encoding);
 			this.writerAttractivenessDispersion = new PrintWriter(attractivenessDispersion, encoding);
 			this.writerAttractivenessRatio = new PrintWriter(attractivenessRatio, encoding);
             this.writerPartialResults = new PrintWriter(partialResults, encoding);
+            this.writerCurrentGlobalBest = new PrintWriter(currentGlobalBest, encoding);
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -241,7 +245,8 @@ public abstract class ACO implements Observer {
 		this.writerAttractivenessDispersion.close();
 		this.writerAttractivenessRatio.close();
         this.writerPartialResults.close();
-    }
+		this.writerCurrentGlobalBest.close();
+	}
 
 	/**
 	 * Perform the daemon actions
@@ -262,7 +267,10 @@ public abstract class ACO implements Observer {
 		this.writerAttractivenessDispersion.println(String.format("%.8f", attractivenessDispersion(this)));
 		this.writerAttractivenessRatio.println(Double.toString(attractivenessRatio(this)));
         this.writerPartialResults.println(Double.toString(globalBest.getTourLength()));
-    }
+		this.writerCurrentGlobalBest.println(
+				String.format("%.8f", currentBest.getTourLength()) + "," + String.format("%.8f", globalBest.getTourLength())
+		);
+	}
 
 	private double pheremoneRatio(ACO aco) {
 		long countEdgesWithPheromone = 0;
@@ -390,7 +398,15 @@ public abstract class ACO implements Observer {
 			// Continue all execution
 			notify();
 		}
-	}	
+	}
+
+	public String getExperimentId() {
+		return experimentId;
+	}
+
+	public void setExperimentId(String experimentId) {
+		this.experimentId = experimentId;
+	}
 
 	public double getAlpha() {
 		return alpha;

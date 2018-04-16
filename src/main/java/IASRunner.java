@@ -13,6 +13,10 @@ public class IASRunner {
     static final Logger LOGGER = Logger.getLogger(IASRunner.class);
 
     public static void main(String[] args) throws ParseException, IOException {
+        int numberOfExperiments = 5;
+
+        for(int i = 0; i < numberOfExperiments; i++){
+            String experimentId = "enter-id-here" + Integer.toString(i);
 
         String tspInstance = "src/main/resources/problems/tsp/berlin52.tsp";
         Problem tspProblem = new TravellingSalesmanProblem(tspInstance);
@@ -22,26 +26,27 @@ public class IASRunner {
         Double ASBeta = 3.0;
         Double Rho = 0.01;
 
-        IndependentAntSystem tspIAS = new IndependentAntSystem(tspProblem);
-        tspIAS.setNumberOfAnts(numberOfAnts);
-        tspIAS.setNumberOfIterations(numberOfiterations);
-        tspIAS.setRho(Rho);
+            IndependentAntSystem tspIAS = new IndependentAntSystem(tspProblem);
+            tspIAS.setExperimentId(experimentId);
+            tspIAS.setNumberOfAnts(numberOfAnts);
+            tspIAS.setNumberOfIterations(numberOfiterations);
+            tspIAS.setRho(Rho);
 
-        ExecutionStats iasES = ExecutionStats.execute(tspIAS, tspProblem);
+            ExecutionStats iasES = ExecutionStats.execute(tspIAS, tspProblem);
+
+            AntSystem tspAS = new AntSystem(tspProblem);
+            tspAS.setExperimentId(experimentId);
+            tspAS.setNumberOfAnts(numberOfAnts);
+            tspAS.setNumberOfIterations(numberOfiterations);
+            tspAS.setAlpha(ASAlpha);
+            tspAS.setBeta(ASBeta);
+            tspAS.setRho(Rho);
+
+            ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
 
 
-        AntSystem tspAS = new AntSystem(tspProblem);
-        tspAS.setNumberOfAnts(numberOfAnts);
-        tspAS.setNumberOfIterations(numberOfiterations);
-        tspAS.setAlpha(ASAlpha);
-        tspAS.setBeta(ASBeta);
-        tspAS.setRho(Rho);
-
-        ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
-
-
-        iasES.printStats();
-        asES.printStats();
+            iasES.printStats();
+            asES.printStats();
 
     }
 

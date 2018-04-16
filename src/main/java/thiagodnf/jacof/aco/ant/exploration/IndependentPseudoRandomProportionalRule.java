@@ -86,7 +86,7 @@ public class IndependentPseudoRandomProportionalRule extends PseudoRandomProport
 
     @Override
     public double getNodeAttractiveness(int i, int j) {
-        // TODO: evaluate if globalBest alpha/beta make any sense
+        // TODO: change it to average from all ants instead of globalbest
         double tau = Math.pow(aco.getGraph().getTau(i, j), aco.getGlobalBest().getAlpha());
         double n = Math.pow(aco.getProblem().getNij(i, j), aco.getGlobalBest().getBeta());
         return tau * n;
