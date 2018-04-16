@@ -44,8 +44,8 @@ public class IndependentAntSystem extends ACO {
             ants[i].setAntInitialization(getAntInitialization());
             ants[i].addObserver(this);
 
-            ants[i].setAlpha(r.nextGaussian() + 2.0);
-            ants[i].setBeta(r.nextGaussian() + 3.0);
+            ants[i].setAlpha(r.nextGaussian() + getAlpha());
+            ants[i].setBeta(r.nextGaussian() + getBeta());
         }
     }
 

@@ -13,41 +13,49 @@ public class IASRunner {
     static final Logger LOGGER = Logger.getLogger(IASRunner.class);
 
     public static void main(String[] args) throws ParseException, IOException {
-        int numberOfExperiments = 5;
-
-        for(int i = 0; i < numberOfExperiments; i++){
-            String experimentId = "enter-id-here" + Integer.toString(i);
 
         String tspInstance = "src/main/resources/problems/tsp/berlin52.tsp";
-        Problem tspProblem = new TravellingSalesmanProblem(tspInstance);
-        Integer numberOfAnts = 50;
-        Integer numberOfiterations = 100;
-        Double ASAlpha = 2.0;
-        Double ASBeta = 3.0;
-        Double Rho = 0.01;
+        String experimentName = "enter-experiment-name-here";
 
+        Problem tspProblem = new TravellingSalesmanProblem(tspInstance);
+        Integer numberOfAnts = 100;
+        Integer numberOfIterations = 100;
+        Double alpha = 1.0;
+        Double beta = 3.0;
+        Double rho = 0.01;
+
+        int numberOfExperiments = 5;
+
+        for (int i = 0; i < numberOfExperiments; i++) {
+            String experimentId = experimentName + "-" + Integer.toString(i);
+
+            // Independent Ant System
             IndependentAntSystem tspIAS = new IndependentAntSystem(tspProblem);
             tspIAS.setExperimentId(experimentId);
             tspIAS.setNumberOfAnts(numberOfAnts);
-            tspIAS.setNumberOfIterations(numberOfiterations);
-            tspIAS.setRho(Rho);
+            tspIAS.setNumberOfIterations(numberOfIterations);
+            tspIAS.setAlpha(alpha);
+            tspIAS.setBeta(beta);
+            tspIAS.setRho(rho);
 
             ExecutionStats iasES = ExecutionStats.execute(tspIAS, tspProblem);
 
+
+            // Regular Ant System
             AntSystem tspAS = new AntSystem(tspProblem);
             tspAS.setExperimentId(experimentId);
             tspAS.setNumberOfAnts(numberOfAnts);
-            tspAS.setNumberOfIterations(numberOfiterations);
-            tspAS.setAlpha(ASAlpha);
-            tspAS.setBeta(ASBeta);
-            tspAS.setRho(Rho);
+            tspAS.setNumberOfIterations(numberOfIterations);
+            tspAS.setAlpha(alpha);
+            tspAS.setBeta(beta);
+            tspAS.setRho(rho);
 
             ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
 
-
+            // Results
             iasES.printStats();
             asES.printStats();
-
+        }
     }
 
 }
