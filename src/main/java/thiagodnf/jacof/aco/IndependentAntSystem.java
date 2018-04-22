@@ -13,8 +13,21 @@ import java.util.Random;
 
 public class IndependentAntSystem extends ACO {
 
+    /**
+     * Gaussian multiplier
+     */
+    protected Double gaussianMul;
+
     public IndependentAntSystem(Problem problem) {
         super(problem);
+    }
+
+    public Double getGaussianMul() {
+        return gaussianMul;
+    }
+
+    public void setGaussianMul(Double gaussianMul) {
+        this.gaussianMul = gaussianMul;
     }
 
     @Override
@@ -44,8 +57,8 @@ public class IndependentAntSystem extends ACO {
             ants[i].setAntInitialization(getAntInitialization());
             ants[i].addObserver(this);
 
-            ants[i].setAlpha(r.nextGaussian() + getAlpha());
-            ants[i].setBeta(r.nextGaussian() + getBeta());
+            ants[i].setAlpha(r.nextGaussian() * getGaussianMul() + getAlpha());
+            ants[i].setBeta(r.nextGaussian() * getGaussianMul() + getBeta());
         }
     }
 

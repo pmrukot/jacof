@@ -226,12 +226,13 @@ public abstract class ACO implements Observer {
 
 	public void prepareBenchmarkDataFiles() {
 		String encoding = "UTF-8";
-        String filePrefix = this.toString() + "-" + this.getExperimentId() + "-";
-        String pheromoneRatio = filePrefix + "pheromone-ratio.txt";
-        String attractivenessDispersion = filePrefix + "attractiveness-dispersion.txt";
-		String attractivenessRatio = filePrefix + "attractiveness-ratio.txt";
-        String partialResults = filePrefix + "partial-results.txt";
-		String currentGlobalBest = filePrefix + "current-and-global-best.txt";
+        String dir = "results\\";
+        String filePrefix = dir + this.toString() + "-" + this.getExperimentId() + "-";
+        String pheromoneRatio = filePrefix + "pheromone_ratio.txt";
+        String attractivenessDispersion = filePrefix + "attractiveness_dispersion.txt";
+        String attractivenessRatio = filePrefix + "attractiveness_ratio.txt";
+        String partialResults = filePrefix + "partial_results.txt";
+        String currentGlobalBest = filePrefix + "current_and_global_best.txt";
 
 		try {
 			this.writerPheromoneRatio = new PrintWriter(pheromoneRatio, encoding);
