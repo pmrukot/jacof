@@ -18,14 +18,15 @@ public class AntSystem extends ACO {
 	public void build() {
 		setGraphInitialization(new ASInitialization(this));
 		setAntInitialization(new AnAntAtEachVertex(this));
-		
-		setAntExploration(new PseudoRandomProportionalRule(this, new RouletteWheel()));
 
+		if (getAntExploration() == null) {
+			setAntExploration(new PseudoRandomProportionalRule(this, new RouletteWheel()));
+		}
 		// Global Update Pheromone Rule
 		getEvaporations().add(new FullEvaporation(this, rho));
 		getDeposits().add(new FullDeposit(this));
 	}
-	
+
 	@Override
 	public String toString() {
 		return AntSystem.class.getSimpleName();
