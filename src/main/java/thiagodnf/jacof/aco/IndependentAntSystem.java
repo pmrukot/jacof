@@ -34,10 +34,8 @@ public class IndependentAntSystem extends ACO {
     public void build() {
         setGraphInitialization(new ASInitialization(this));
         setAntInitialization(new AnAntAtEachVertex(this));
+        setAntExploration(new IndependentPseudoRandomProportionalRule(this, new RouletteWheel()));
 
-        if (getAntExploration() == null) {
-            setAntExploration(new IndependentPseudoRandomProportionalRule(this, new RouletteWheel()));
-        }
         // Global Update Pheromone Rule
         getEvaporations().add(new FullEvaporation(this, rho));
         getDeposits().add(new FullDeposit(this));
