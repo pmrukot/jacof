@@ -1,14 +1,14 @@
 package thiagodnf.jacof.aco.ant;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import thiagodnf.jacof.aco.ACO;
+import thiagodnf.jacof.aco.ant.initialization.AbstractAntInitialization;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-import thiagodnf.jacof.aco.ACO;
-import thiagodnf.jacof.aco.ant.initialization.AbstractAntInitialization;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This class represents an ant and its process of building a solution
@@ -202,6 +202,6 @@ public class Ant extends Observable implements Runnable{
 	 */
 	@Override
 	public String toString() {
-		return "Ant_" + id + " " + tourLength + " " + tour + " alpha: " + alpha + " beta: " + beta;
+		return "Ant_" + id + "\t" + tourLength + "\t" + tour + " alpha: " + alpha + " beta: " + beta;
 	}
 }
