@@ -396,9 +396,9 @@ public abstract class ACO implements Observer {
 		if (++finishedAnts == numberOfAnts) {
 			// Restart the counter to build the solutions again
 			finishedAnts = 0;
-			
-			LOGGER.debug("Current-best: " + currentBest);
-			LOGGER.info("Global-best: " + globalBest);			
+
+			LOGGER.info("Current-best: \t" + currentBest);
+			LOGGER.info("Global-best: \t" + globalBest);
 			
 			// Continue all execution
 			notify();

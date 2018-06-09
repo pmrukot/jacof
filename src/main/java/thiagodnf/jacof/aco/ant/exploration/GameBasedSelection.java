@@ -10,17 +10,14 @@ import thiagodnf.jacof.aco.ant.selection.RouletteWheel;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * This class represents how an ant in AS algorithm chooses the next node
+ * This class represents how an ant in GameBasedAS algorithm chooses the next node
  *
- * @author Thiago N. Ferreira
+ * @author
  * @version 1.0.0
  */
 public class GameBasedSelection extends AbstractAntExploration {
 
     static final Logger LOGGER = Logger.getLogger(GameBasedSelection.class);
-    private double selectBestPheromone;
-    private double selectShortestPath;
-    private double selectRandomProbability;
 
     /**
      * Constructor
@@ -41,36 +38,19 @@ public class GameBasedSelection extends AbstractAntExploration {
         this(aco, new RouletteWheel());
     }
 
-    /**
-     * Constructor by using RouletteWheel as default ant selection
-     *
-     * @param aco The ant colony optimization used
-     * @param aco The ant colony optimization used
-     * @param aco The ant colony optimization used
-     * @param aco The ant colony optimization used
-     */
-    public GameBasedSelection(ACO aco, double selectBestPheromone, double selectShortestPath, double selectRandomProbability) {
-        this(aco, new RouletteWheel());
-        this.selectBestPheromone = selectBestPheromone;
-        this.selectShortestPath = selectShortestPath;
-        this.selectRandomProbability = selectRandomProbability;
-    }
 
     @Override
     public int getNextNode(Ant ant, int i) {
-        if (ant.getClass() == GameBasedAnt.class) {
-            return doGBAntExploration((GameBasedAnt) ant, i);
-        } else {
-            return doExploration(ant, i);
-        }
+        return doExploration((GameBasedAnt) ant, i);
     }
 
-    public int doGBAntExploration(GameBasedAnt ant, int i) {
+
+    public int doExploration(GameBasedAnt ant, int i) {
 
         int nextNode = -1;
 
         int bestPheromoneNodeIdx = 0;
-        double bestFeromoneNodeVal = 0.0;
+        double bestPheromoneNodeVal = 0.0;
         int shortestPathNodeIdx = 0;
         double shortestPathNodeVal = Double.MAX_VALUE;
 
@@ -79,9 +59,9 @@ public class GameBasedSelection extends AbstractAntExploration {
         for (Integer j : ant.getNodesToVisit()) {
             checkState(aco.getGraph().getTau(i, j) != 0.0, "The tau(i,j) should not be 0.0");
 
-            if (aco.getGraph().getTau(i, j) > bestFeromoneNodeVal) {
+            if (aco.getGraph().getTau(i, j) > bestPheromoneNodeVal) {
                 bestPheromoneNodeIdx = j;
-                bestFeromoneNodeVal = aco.getGraph().getTau(i, j);
+                bestPheromoneNodeVal = aco.getGraph().getTau(i, j);
             }
 
             if (aco.getProblem().getNij(i, j) < shortestPathNodeVal) {
@@ -89,90 +69,38 @@ public class GameBasedSelection extends AbstractAntExploration {
                 shortestPathNodeVal = aco.getProblem().getNij(i, j);
             }
         }
+//        if (ant.getId() == 6) {
+//            LOGGER.info("From node: " + i + " \n Shortest path idx: " + shortestPathNodeIdx + " with val: " + shortestPathNodeVal +
+//                    "\n BestPheromoene path idx: " + bestPheromoneNodeIdx + " with val: " + bestPheromoneNodeVal);
+//        }
 
         // If shortest path is the path with most pheromone return that path
         if (shortestPathNodeIdx == bestPheromoneNodeIdx) {
             return shortestPathNodeIdx;
         }
 
-        double singleSelectRandomProbability = selectRandomProbability / ant.getNodesToVisit().size();
 
-        //Assign probabilities
+        // Assign equal probability value to each possible node
         double[] probability = new double[aco.getProblem().getNumberOfNodes()];
-        double sumProbability = 0.0;
-
-        // Assign equal value to each pheromone
+        double singleSelectRandomProbability = ant.getRandomChooseProbability() / (ant.getNodesToVisit().size() - 2);
         for (Integer j : ant.getNodesToVisit()) {
             probability[j] = singleSelectRandomProbability;
-            sumProbability += probability[j];
         }
 
-        //Assign values fo 'best' nodes
-        probability[bestPheromoneNodeIdx] += ant.getSelectBestPheromone();
-        sumProbability += ant.getSelectBestPheromone();
+        //Assign values fo 'best' nodes overiting "random"
+        probability[bestPheromoneNodeIdx] = ant.getBestPheromonePathProbability();
+        probability[shortestPathNodeIdx] = ant.getShortestPathProbability();
 
-        probability[shortestPathNodeIdx] += ant.getSelectShortestPath();
-        sumProbability += ant.getSelectShortestPath();
-
-        checkState(sumProbability != 0.0, "The sum cannot be 0.0");
-
-        // Select the next node by probability
-        nextNode = antSelection.select(probability, sumProbability);
-
-        checkState(nextNode != -1, "The next node should not be -1");
-
-        return nextNode;
-    }
-
-
-    public int doExploration(Ant ant, int i) {
-
-        int nextNode = -1;
-
-        int bestFeromoneNodeIdx = 0;
-        double bestFeromoneNodeVal = 0.0;
-        int shortestPathNodeIdx = 0;
-        double shortestPathNodeVal = Double.MAX_VALUE;
-
-
-        // Find shortest path and most feromone path
-        for (Integer j : ant.getNodesToVisit()) {
-            checkState(aco.getGraph().getTau(i, j) != 0.0, "The tau(i,j) should not be 0.0");
-
-            if (aco.getGraph().getTau(i, j) > bestFeromoneNodeVal) {
-                bestFeromoneNodeIdx = j;
-                bestFeromoneNodeVal = aco.getGraph().getTau(i, j);
-            }
-
-            if (aco.getProblem().getNij(i, j) < shortestPathNodeVal) {
-                shortestPathNodeIdx = j;
-                shortestPathNodeVal = aco.getProblem().getNij(i, j);
-            }
-        }
-
-        double singleSelectRandom = selectRandomProbability / ant.getNodesToVisit().size();
-
-
-        //Assign probabilities
-        double[] probability = new double[aco.getProblem().getNumberOfNodes()];
+        // Count the sum of probabilities
         double sumProbability = 0.0;
-
-        for (Integer j : ant.getNodesToVisit()) {
-            probability[j] = singleSelectRandom;
-            sumProbability += probability[j];
+        for (double val : probability) {
+            sumProbability += val;
         }
-
-        probability[bestFeromoneNodeIdx] += selectBestPheromone;
-        sumProbability += selectBestPheromone;
-
-        probability[shortestPathNodeIdx] += selectShortestPath;
-        sumProbability += selectShortestPath;
-
         checkState(sumProbability != 0.0, "The sum cannot be 0.0");
+//        LOGGER.info("Node " + i + " probabilities: " + Arrays.toString(probability));
 
         // Select the next node by probability
         nextNode = antSelection.select(probability, sumProbability);
-
         checkState(nextNode != -1, "The next node should not be -1");
 
         return nextNode;

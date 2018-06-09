@@ -77,10 +77,10 @@ public class GameBasedAntSystem extends ACO {
             newAnt.setAntInitialization(getAntInitialization());
             newAnt.addObserver(this);
 
-            newAnt.setSelectShortestPath(Double.parseDouble(antLines.get(i)[0]));
-            newAnt.setSelectBestPheromone(Double.parseDouble(antLines.get(i)[1]));
-            newAnt.setSelectRandom(Double.parseDouble(antLines.get(i)[2]));
-            LOGGER.info(newAnt);
+            newAnt.setShortestPathProbability(Double.parseDouble(antLines.get(i)[0]));
+            newAnt.setBestPheromonePathProbability(Double.parseDouble(antLines.get(i)[1]));
+            newAnt.setRandomChooseProbability(Double.parseDouble(antLines.get(i)[2]));
+//            LOGGER.info(newAnt);
 
             ants[i] = newAnt;
         }

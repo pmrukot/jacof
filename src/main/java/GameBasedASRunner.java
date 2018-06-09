@@ -1,8 +1,6 @@
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
-import thiagodnf.jacof.aco.AntSystem;
 import thiagodnf.jacof.aco.GameBasedAntSystem;
-import thiagodnf.jacof.aco.ant.exploration.GameBasedSelection;
 import thiagodnf.jacof.problem.Problem;
 import thiagodnf.jacof.problem.tsp.TravellingSalesmanProblem;
 import thiagodnf.jacof.util.ExecutionStats;
@@ -27,41 +25,24 @@ public class GameBasedASRunner {
         double alpha = 2.0;
         double beta = 3.0;
 
-        double selectBestPheromone = 0.3;
-        double selectShortestPath = 0.5;
-        double selectRandom = 0.2;
-
         String csvFile = "src/main/resources/ants.csv";
 
         for (int i = 0; i < numberOfRepetitions; i++) {
 
             String experimentId = experimentName + "-" + Integer.toString(i);
 
-            // Regular Ant System
+//            // Regular Ant System
+//
+//            AntSystem tspAS = new AntSystem(tspProblem);
+//            tspAS.setNumberOfAnts(numberOfAnts);
+//            tspAS.setNumberOfIterations(numberOfIterations);
+//            tspAS.setRho(rho);
+//            tspAS.setExperimentId(experimentId);
+//            tspAS.setAlpha(alpha);
+//            tspAS.setBeta(beta);
+//
+//            ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
 
-            AntSystem tspAS = new AntSystem(tspProblem);
-            tspAS.setNumberOfAnts(numberOfAnts);
-            tspAS.setNumberOfIterations(numberOfIterations);
-            tspAS.setRho(rho);
-            tspAS.setExperimentId(experimentId);
-            tspAS.setAlpha(alpha);
-            tspAS.setBeta(beta);
-
-            ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
-
-
-            // Regular Ant System which is game  with set of params
-
-            AntSystem tspGbAS = new AntSystem(tspProblem);
-            tspGbAS.setAntExploration(new GameBasedSelection(tspAS, selectBestPheromone, selectShortestPath, selectRandom));
-            tspGbAS.setNumberOfAnts(numberOfAnts);
-            tspGbAS.setNumberOfIterations(numberOfIterations);
-            tspGbAS.setRho(rho);
-            tspGbAS.setExperimentId(experimentId);
-            tspGbAS.setAlpha(alpha);
-            tspGbAS.setBeta(beta);
-
-            ExecutionStats gbasES = ExecutionStats.execute(tspGbAS, tspProblem);
 
 
             // Regular Ant System which is game based on csv file
@@ -77,8 +58,7 @@ public class GameBasedASRunner {
             ExecutionStats csvGbAsES = ExecutionStats.execute(tspCsvGbAS, tspProblem);
 
             // Results
-            asES.printStats();
-            gbasES.printStats();
+//            asES.printStats();
             csvGbAsES.printStats();
         }
     }

@@ -4,36 +4,36 @@ import thiagodnf.jacof.aco.ACO;
 
 public class GameBasedAnt extends Ant {
 
-    protected double selectBestPheromone;
-    protected double selectShortestPath;
-    protected double selectRandom;
+    protected double bestPheromonePathProbability;
+    protected double shortestPathProbability;
+    protected double randomChooseProbability;
 
     public GameBasedAnt(ACO aco, int id) {
         super(aco, id);
     }
 
-    public double getSelectBestPheromone() {
-        return selectBestPheromone;
+    public double getBestPheromonePathProbability() {
+        return bestPheromonePathProbability;
     }
 
-    public void setSelectBestPheromone(double selectBestPheromone) {
-        this.selectBestPheromone = selectBestPheromone;
+    public void setBestPheromonePathProbability(double bestPheromonePathProbability) {
+        this.bestPheromonePathProbability = bestPheromonePathProbability;
     }
 
-    public double getSelectShortestPath() {
-        return selectShortestPath;
+    public double getShortestPathProbability() {
+        return shortestPathProbability;
     }
 
-    public void setSelectShortestPath(double selectShortestPath) {
-        this.selectShortestPath = selectShortestPath;
+    public void setShortestPathProbability(double shortestPathProbability) {
+        this.shortestPathProbability = shortestPathProbability;
     }
 
-    public double getSelectRandom() {
-        return selectRandom;
+    public double getRandomChooseProbability() {
+        return randomChooseProbability;
     }
 
-    public void setSelectRandom(double selectRandom) {
-        this.selectRandom = selectRandom;
+    public void setRandomChooseProbability(double randomChooseProbability) {
+        this.randomChooseProbability = randomChooseProbability;
     }
 
     /**
@@ -42,8 +42,8 @@ public class GameBasedAnt extends Ant {
     @Override
     public String toString() {
         return "Ant_" + id +
-                " selectBestPheromone: " + selectBestPheromone +
-                " selectShortestPath: " + selectShortestPath +
-                " selectRandom: " + selectRandom;
+                " bestPheromonePathProbability: " + bestPheromonePathProbability +
+                " shortestPathProbability: " + shortestPathProbability +
+                " randomChooseProbability: " + randomChooseProbability;
     }
 }
