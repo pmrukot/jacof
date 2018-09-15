@@ -228,16 +228,16 @@ public abstract class ACO implements Observer {
 		String encoding = "UTF-8";
         String dir = "results\\";
         String filePrefix = dir + this.toString() + "-" + this.getExperimentId() + "-";
-        String pheromoneRatio = filePrefix + "pheromone_ratio.txt";
-        String attractivenessDispersion = filePrefix + "attractiveness_dispersion.txt";
-        String attractivenessRatio = filePrefix + "attractiveness_ratio.txt";
+//        String pheromoneRatio = filePrefix + "pheromone_ratio.txt";
+//        String attractivenessDispersion = filePrefix + "attractiveness_dispersion.txt";
+//        String attractivenessRatio = filePrefix + "attractiveness_ratio.txt";
         String partialResults = filePrefix + "partial_results.txt";
         String currentGlobalBest = filePrefix + "current_and_global_best.txt";
 
 		try {
-			this.writerPheromoneRatio = new PrintWriter(pheromoneRatio, encoding);
-			this.writerAttractivenessDispersion = new PrintWriter(attractivenessDispersion, encoding);
-			this.writerAttractivenessRatio = new PrintWriter(attractivenessRatio, encoding);
+//			this.writerPheromoneRatio = new PrintWriter(pheromoneRatio, encoding);
+//			this.writerAttractivenessDispersion = new PrintWriter(attractivenessDispersion, encoding);
+//			this.writerAttractivenessRatio = new PrintWriter(attractivenessRatio, encoding);
             this.writerPartialResults = new PrintWriter(partialResults, encoding);
             this.writerCurrentGlobalBest = new PrintWriter(currentGlobalBest, encoding);
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -246,9 +246,9 @@ public abstract class ACO implements Observer {
 	}
 
 	public void closeBenchmarkDataFiles() {
-		this.writerPheromoneRatio.close();
-		this.writerAttractivenessDispersion.close();
-		this.writerAttractivenessRatio.close();
+//		this.writerPheromoneRatio.close();
+//		this.writerAttractivenessDispersion.close();
+//		this.writerAttractivenessRatio.close();
         this.writerPartialResults.close();
 		this.writerCurrentGlobalBest.close();
 	}
@@ -268,9 +268,9 @@ public abstract class ACO implements Observer {
 			daemonAction.doAction();
 		}
 
-		this.writerPheromoneRatio.println(Double.toString(pheremoneRatio(this)));
-		this.writerAttractivenessDispersion.println(String.format("%.8f", attractivenessDispersion(this)));
-		this.writerAttractivenessRatio.println(Double.toString(attractivenessRatio(this)));
+//		this.writerPheromoneRatio.println(Double.toString(pheremoneRatio(this)));
+//		this.writerAttractivenessDispersion.println(String.format("%.8f", attractivenessDispersion(this)));
+//		this.writerAttractivenessRatio.println(Double.toString(attractivenessRatio(this)));
         this.writerPartialResults.println(Double.toString(globalBest.getTourLength()));
 		this.writerCurrentGlobalBest.println(
 				String.format("%.8f", currentBest.getTourLength()) + "," + String.format("%.8f", globalBest.getTourLength())

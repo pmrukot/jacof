@@ -69,27 +69,33 @@ public class GameBasedSelection extends AbstractAntExploration {
                 shortestPathNodeVal = aco.getProblem().getNij(i, j);
             }
         }
-//        if (ant.getId() == 6) {
-//            LOGGER.info("From node: " + i + " \n Shortest path idx: " + shortestPathNodeIdx + " with val: " + shortestPathNodeVal +
-//                    "\n BestPheromoene path idx: " + bestPheromoneNodeIdx + " with val: " + bestPheromoneNodeVal);
-//        }
-
-        // If shortest path is the path with most pheromone return that path
-        if (shortestPathNodeIdx == bestPheromoneNodeIdx) {
-            return shortestPathNodeIdx;
-        }
 
 
-        // Assign equal probability value to each possible node
+        //Assign probabilities depending on problem class
         double[] probability = new double[aco.getProblem().getNumberOfNodes()];
-        double singleSelectRandomProbability = ant.getRandomChooseProbability() / (ant.getNodesToVisit().size() - 2);
-        for (Integer j : ant.getNodesToVisit()) {
-            probability[j] = singleSelectRandomProbability;
-        }
 
-        //Assign values fo 'best' nodes overiting "random"
-        probability[bestPheromoneNodeIdx] = ant.getBestPheromonePathProbability();
-        probability[shortestPathNodeIdx] = ant.getShortestPathProbability();
+        if (shortestPathNodeIdx == bestPheromoneNodeIdx) {
+
+            // Assign equal probability value to each possible node
+            double singleSelectRandomProbability = ant.getNOTBestPheromoneAndShortestPath() / (ant.getNodesToVisit().size() - 1);
+            for (Integer j : ant.getNodesToVisit()) {
+                probability[j] = singleSelectRandomProbability;
+            }
+            probability[bestPheromoneNodeIdx] = ant.getBestPheromoneAndShortestPathProbability();
+
+        } else {
+
+            // Assign equal probability value to each possible node
+            double singleSelectRandomProbability = ant.getRandomChooseProbability() / (ant.getNodesToVisit().size() - 2);
+            for (Integer j : ant.getNodesToVisit()) {
+                probability[j] = singleSelectRandomProbability;
+            }
+
+            //Assign values fo 'best' nodes overiting "random"
+            probability[bestPheromoneNodeIdx] = ant.getBestPheromonePathProbability();
+            probability[shortestPathNodeIdx] = ant.getShortestPathProbability();
+
+        }
 
         // Count the sum of probabilities
         double sumProbability = 0.0;
@@ -97,13 +103,17 @@ public class GameBasedSelection extends AbstractAntExploration {
             sumProbability += val;
         }
         checkState(sumProbability != 0.0, "The sum cannot be 0.0");
-//        LOGGER.info("Node " + i + " probabilities: " + Arrays.toString(probability));
+
 
         // Select the next node by probability
         nextNode = antSelection.select(probability, sumProbability);
         checkState(nextNode != -1, "The next node should not be -1");
 
-        return nextNode;
+        if (nextNode == bestPheromoneNodeIdx || nextNode == shortestPathNodeIdx) {
+            return nextNode;
+        }
+
+        return doRegularExploration(ant, i);
     }
 
     //TODO: Below is not true, but now not relevant
@@ -117,5 +127,46 @@ public class GameBasedSelection extends AbstractAntExploration {
     @Override
     public String toString() {
         return GameBasedSelection.class.getSimpleName() + " with " + antSelection;
+    }
+
+    public int doRegularExploration(Ant ant, int i) {
+
+        int nextNode = -1;
+
+        double sum = 0.0;
+
+        double[] tij = new double[aco.getProblem().getNumberOfNodes()];
+        double[] nij = new double[aco.getProblem().getNumberOfNodes()];
+
+        // Update the sum
+        for (Integer j : ant.getNodesToVisit()) {
+
+            checkState(aco.getGraph().getTau(i, j) != 0.0, "The tau(i,j) should not be 0.0");
+
+            tij[j] = Math.pow(aco.getGraph().getTau(i, j), aco.getAlpha());
+            nij[j] = Math.pow(aco.getProblem().getNij(i, j), aco.getBeta());
+
+            sum += tij[j] * nij[j];
+        }
+
+        checkState(sum != 0.0, "The sum cannot be 0.0");
+
+        double[] probability = new double[aco.getProblem().getNumberOfNodes()];
+
+        double sumProbability = 0.0;
+
+        for (Integer j : ant.getNodesToVisit()) {
+
+            probability[j] = (tij[j] * nij[j]) / sum;
+
+            sumProbability += probability[j];
+        }
+
+        // Select the next node by probability
+        nextNode = antSelection.select(probability, sumProbability);
+
+        checkState(nextNode != -1, "The next node should not be -1");
+
+        return nextNode;
     }
 }

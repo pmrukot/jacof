@@ -7,6 +7,8 @@ public class GameBasedAnt extends Ant {
     protected double bestPheromonePathProbability;
     protected double shortestPathProbability;
     protected double randomChooseProbability;
+    protected double bestPheromoneAndShortestPathProbability;
+    protected double NOTBestPheromoneAndShortestPath;
 
     public GameBasedAnt(ACO aco, int id) {
         super(aco, id);
@@ -41,9 +43,28 @@ public class GameBasedAnt extends Ant {
      */
     @Override
     public String toString() {
-        return "Ant_" + id +
-                " bestPheromonePathProbability: " + bestPheromonePathProbability +
-                " shortestPathProbability: " + shortestPathProbability +
-                " randomChooseProbability: " + randomChooseProbability;
+        return "GameBasedAnt{" +
+                "bestPheromonePathProbability=" + bestPheromonePathProbability +
+                ", shortestPathProbability=" + shortestPathProbability +
+                ", randomChooseProbability=" + randomChooseProbability +
+                ", bestPheromoneAndShortestPathProbability=" + bestPheromoneAndShortestPathProbability +
+                ", NOTBestPheromoneAndShortestPath=" + NOTBestPheromoneAndShortestPath +
+                '}';
+    }
+
+    public double getBestPheromoneAndShortestPathProbability() {
+        return bestPheromoneAndShortestPathProbability;
+    }
+
+    public void setBestPheromoneAndShortestPathProbability(double bestPheromoneAndShortestPathProbability) {
+        this.bestPheromoneAndShortestPathProbability = bestPheromoneAndShortestPathProbability;
+    }
+
+    public double getNOTBestPheromoneAndShortestPath() {
+        return NOTBestPheromoneAndShortestPath;
+    }
+
+    public void setNOTBestPheromoneAndShortestPath(double NOTBestPheromoneAndShortestPath) {
+        this.NOTBestPheromoneAndShortestPath = NOTBestPheromoneAndShortestPath;
     }
 }

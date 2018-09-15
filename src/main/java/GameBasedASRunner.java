@@ -1,6 +1,6 @@
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Logger;
-import thiagodnf.jacof.aco.GameBasedAntSystem;
+import thiagodnf.jacof.aco.MixedGameBasedAntSystem;
 import thiagodnf.jacof.problem.Problem;
 import thiagodnf.jacof.problem.tsp.TravellingSalesmanProblem;
 import thiagodnf.jacof.util.ExecutionStats;
@@ -13,19 +13,19 @@ public class GameBasedASRunner {
      */
     static final Logger LOGGER = Logger.getLogger(GameBasedASRunner.class);
 
-    private static final Integer numberOfAnts = 50;
-    private static final Integer numberOfIterations = 50;
+    private static final Integer numberOfAnts = 100;
+    private static final Integer numberOfIterations = 100;
+    private static final int numberOfRepetitions = 3;
     private static final Double rho = 0.01;
-    private static final int numberOfRepetitions = 1;
 
     public static void main(String[] args) throws ParseException, IOException {
 
         Problem tspProblem = new TravellingSalesmanProblem("src/main/resources/problems/tsp/berlin52.tsp");
-        String experimentName = "game_based";
+        String experimentName = "GB_10-90_10p";
         double alpha = 2.0;
         double beta = 3.0;
 
-        String csvFile = "src/main/resources/ants.csv";
+        String csvFile = "src/main/resources/ants_2_copy.csv";
 
         for (int i = 0; i < numberOfRepetitions; i++) {
 
@@ -44,10 +44,9 @@ public class GameBasedASRunner {
 //            ExecutionStats asES = ExecutionStats.execute(tspAS, tspProblem);
 
 
+            // Mixed Game Based Ant System which is sourced from csv file
 
-            // Regular Ant System which is game based on csv file
-
-            GameBasedAntSystem tspCsvGbAS = new GameBasedAntSystem(tspProblem, csvFile);
+            MixedGameBasedAntSystem tspCsvGbAS = new MixedGameBasedAntSystem(tspProblem, csvFile);
             tspCsvGbAS.setNumberOfAnts(numberOfAnts);
             tspCsvGbAS.setNumberOfIterations(numberOfIterations);
             tspCsvGbAS.setRho(rho);
